@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/firebase_auth_service.dart';
 import '../../widgets/authentication/auth_button.dart';
+import '../../widgets/authentication/google_button.dart';
 import '../../widgets/authentication/text_form_field.dart';
 import '../../widgets/toast.dart';
 
@@ -101,15 +102,14 @@ class _SignUpState extends State<SignUp> {
                         onPressed: _signUp,
                         isSigning: isSigning,
                       ),
-                      // TODO: Make the google sign in work
-                      // const SizedBox(
-                      //   height: 15,
-                      // ),
-                      // const Text("OR"),
-                      // const SizedBox(
-                      //   height: 15,
-                      // ),
-                      // GoogleButton(isSigning: isGoogleSigning),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Text("OR"),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      GoogleButton(isSigning: isGoogleSigning),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -172,7 +172,7 @@ Widget buildTitleSection(BuildContext context) {
             ),
           ),
           Text(
-            "Unlock a world of delicious inspiration",
+            "Join us!",
             textAlign: TextAlign.left,
             style: TextStyle(
               fontSize: 20,

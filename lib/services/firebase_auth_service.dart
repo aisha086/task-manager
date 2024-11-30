@@ -64,19 +64,22 @@ class FirebaseAuthService {
   }
 
   signInWithGoogle() async {
-    //begin sign in process
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+    try{
+      //begin sign in process
+      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
 
-    //obtaining auth details from request
-    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+      //obtaining auth details from request
+      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
 
-    //create new credential
-    final credential = GoogleAuthProvider.credential(
-        accessToken: gAuth.accessToken,
-        idToken: gAuth.idToken
-    );
+      //create new credential
+      final credential = GoogleAuthProvider.credential(
+          accessToken: gAuth.accessToken, idToken: gAuth.idToken);
 
-    return await _auth.signInWithCredential(credential);
+      return await _auth.signInWithCredential(credential);
+    }
+    catch(e){
+      showToast("An error occured $e");
+    }
   }
 
   void signOut() async{

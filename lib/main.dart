@@ -1,7 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/screens/authentication/login_screen.dart';
+import 'package:task_manager/screens/home_screen.dart';
+import 'package:task_manager/screens/launching/on_boarding_screens.dart';
+import 'package:task_manager/screens/launching/splash_screen.dart';
+import 'package:task_manager/services/themes_service.dart';
 
 import 'firebase_options.dart';
 
@@ -19,14 +24,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const AuthPage(),
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Task Managers',
+      themeMode: ThemeMode.system,
+      theme: MyTheme.lightTheme(context),
+      darkTheme: MyTheme.darkTheme(context),
+      home: const OnboardingPage(),
     );
   }
 }
@@ -41,7 +45,7 @@ class AuthPage extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
-            return Placeholder();  //will add dashboard here
+            return const HomePage();  //will add dashboard here
           } else{
             return const LoginPage();
           }

@@ -3,6 +3,7 @@ import 'package:task_manager/screens/authentication/sign_up_screen.dart';
 
 import '../../services/firebase_auth_service.dart';
 import '../../widgets/authentication/auth_button.dart';
+import '../../widgets/authentication/google_button.dart';
 import '../../widgets/authentication/text_form_field.dart';
 import '../../widgets/toast.dart';
 import 'forget_password.dart';
@@ -89,14 +90,14 @@ class _LoginPageState extends State<LoginPage> {
                       isSigning: isSigning,
                     ),
                     // Todo: make the google sign in work with customer database
-                    // const SizedBox(
-                    //   height: 15,
-                    // ),
-                    // const Text("OR"),
-                    // const SizedBox(
-                    //   height: 15,
-                    // ),
-                    // GoogleButton(isSigning: isGoogleSigning),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    const Text("OR"),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    GoogleButton(isSigning: isGoogleSigning),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -157,7 +158,7 @@ Widget buildTitleSection(BuildContext context) {
             ),
           ),
           Text(
-            "Lets get cooking!",
+            "Lets start getting organized",
             textAlign: TextAlign.left,
             style: TextStyle(
               fontSize: 26,
