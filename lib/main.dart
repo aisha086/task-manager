@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task_manager/databases/task_service.dart';
+import 'package:task_manager/databases/team_service.dart';
 import 'package:task_manager/screens/authentication/login_screen.dart';
 import 'package:task_manager/screens/home_screen.dart';
 import 'package:task_manager/screens/launching/on_boarding_screens.dart';
@@ -15,6 +17,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  Get.put(TaskService());
+  Get.put(TeamService());
   runApp(const MyApp());
 }
 
@@ -30,7 +34,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
-      home: const OnboardingPage(),
+      home: const SplashScreen(),
     );
   }
 }

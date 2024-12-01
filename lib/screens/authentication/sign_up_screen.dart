@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../services/firebase_auth_service.dart';
 import '../../widgets/authentication/auth_button.dart';
@@ -116,7 +117,7 @@ class _SignUpState extends State<SignUp> {
                           const Text("Already have an account?"),
                           TextButton(
                               onPressed: () {
-                                Navigator.pop(context);
+                                Get.back();
                               },
                               child: const Text("Log In"))
                         ],
@@ -142,7 +143,7 @@ class _SignUpState extends State<SignUp> {
 
     if (password == _confirmPasswordController.text) {
       await authService.signUpWithEmailAndPassword(email, password);
-      Navigator.pop(context);
+      Get.back();
     } else {
       showToast("Passwords don't match!");
       setState(() {

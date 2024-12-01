@@ -78,7 +78,7 @@ class FirebaseAuthService {
       return await _auth.signInWithCredential(credential);
     }
     catch(e){
-      showToast("An error occured $e");
+      showToast("An error occurred $e");
     }
   }
 

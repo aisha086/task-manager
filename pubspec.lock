@@ -49,6 +49,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  cloud_firestore:
+    dependency: "direct main"
+    description:
+      name: cloud_firestore
+      sha256: d5b73c5f27d95504e45d96e793fe9f9daa62e42b22da85b9f8de4916f46e916d
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.0"
+  cloud_firestore_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_firestore_platform_interface
+      sha256: "8d5a3a501f3b21638199819ab76709d3b87abc9a565ed611b13a238611cfba27"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.0"
+  cloud_firestore_web:
+    dependency: transitive
+    description:
+      name: cloud_firestore_web
+      sha256: "24f302e4ffd88ec2891e33f432b53f59ebd072664c5dc804b7fcbc51ea22b4b3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.4"
   collection:
     dependency: transitive
     description:
@@ -272,6 +296,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  intl:
+    dependency: "direct main"
+    description:
+      name: intl
+      sha256: "00f33b908655e606b86d2ade4710a231b802eec6f11e87e4ea3783fd72077a50"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.20.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -392,6 +424,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  percent_indicator:
+    dependency: "direct main"
+    description:
+      name: percent_indicator
+      sha256: "0d77d5c6fa9b7f60202cedf748b568ba9ba38d3f30405d6ceae4da76f5185462"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.4"
   petitparser:
     dependency: transitive
     description:

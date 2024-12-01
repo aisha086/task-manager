@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../services/firebase_auth_service.dart';
 import '../../widgets/authentication/auth_button.dart';
@@ -95,7 +96,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     bool resetLink = await authService.resetPassword(email);
 
     if(resetLink){
-      Navigator.pop(context);
+      Get.back();
     }
     else{
       setState(() {

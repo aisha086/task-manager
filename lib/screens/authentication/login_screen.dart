@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/screens/authentication/sign_up_screen.dart';
 
 import '../../services/firebase_auth_service.dart';
@@ -72,11 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                      const ResetPasswordPage()));
+                              Get.to(const ResetPasswordPage());
                             },
                             child: const Text("Forgot Password"))
                       ],
@@ -104,11 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                         const Text("Don't have an account?"),
                         TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                      const SignUp()));
+                              Get.to(const SignUp());
                             },
                             child: const Text("Sign Up"))
                       ],
