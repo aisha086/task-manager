@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task_manager/databases/task_service.dart';
 import 'package:task_manager/widgets/tasks/task_tile.dart';
 
-import '../../models/task.dart';
 
 class TaskListWidget extends StatelessWidget {
-  final List<Task> tasks;
 
-  const TaskListWidget({
+  TaskListWidget({
     super.key,
-    required this.tasks,
   });
+
+  final TaskService taskService = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +31,9 @@ class TaskListWidget extends StatelessWidget {
               const SizedBox(height: 10),
               Expanded(
                 child: ListView.builder(
-                  itemCount: tasks.length,
+                  itemCount: taskService.tasks.length < 5 ? taskService.tasks.length : 5,
                   itemBuilder: (context, index) {
-                    final task = tasks[index];
+                    final task = taskService.tasks[index];
                     return TaskTile(task: task);
                   },
                 ),

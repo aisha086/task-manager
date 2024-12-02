@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/toast.dart';
 
@@ -8,7 +7,7 @@ class FirebaseAuthService {
 
   signUpWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential credential = await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       _auth.signOut();
       return true;

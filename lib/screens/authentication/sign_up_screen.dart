@@ -23,7 +23,7 @@ class _SignUpState extends State<SignUp> {
   bool isGoogleSigning = false;
   FirebaseAuthService authService = FirebaseAuthService();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
+  // final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
   TextEditingController();
@@ -35,7 +35,7 @@ class _SignUpState extends State<SignUp> {
   @override
   void dispose() {
     _emailController.dispose();
-    _nameController.dispose();
+    // _nameController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -63,14 +63,14 @@ class _SignUpState extends State<SignUp> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CredentialsForm(
-                        isPassword: false,
-                        labelText: "Name",
-                        controller: _nameController,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      // CredentialsForm(
+                      //   isPassword: false,
+                      //   labelText: "Name",
+                      //   controller: _nameController,
+                      // ),
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
                       CredentialsForm(
                         isPassword: false,
                         labelText: "Email",
@@ -137,7 +137,7 @@ class _SignUpState extends State<SignUp> {
     setState(() {
       isSigning = true;
     });
-    String name = _nameController.text;
+    // String name = _nameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
 
@@ -158,7 +158,7 @@ Widget buildTitleSection(BuildContext context) {
   return const Expanded(
     flex: 2,
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,

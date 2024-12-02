@@ -25,7 +25,8 @@ class TaskService extends GetxController {
   Future<String> addTask(Task task) async {
     try {
       DocumentReference docRef = await taskCollection.add(task.toMap());
-      fetchTasks();
+      await fetchTasks();
+      showToast("Success Task added!");
       return docRef.id;
     } on Exception catch (e) {
       showToast("Error Occurred $e");
@@ -38,6 +39,7 @@ class TaskService extends GetxController {
   // Fetch tasks for the current user (top 5, sorted by due date)
   Future<void> fetchTasks() async {
     try{
+      print("fetching");
       String currentUserId = _auth.currentUser!.uid;
       QuerySnapshot snapshot = await taskCollection
           .where('userId', isEqualTo: currentUserId) // Fetch tasks by userId
@@ -49,6 +51,7 @@ class TaskService extends GetxController {
 
       tasks.sort((a, b) => a.dueDate.compareTo(b.dueDate));
       calculatePendingAndCompletedTasks();
+      print("fetched");
     }
     catch(e){
       print("fetch");
@@ -59,13 +62,41 @@ class TaskService extends GetxController {
 
   // Update task by ID
   Future<void> updateTask(String taskId, Task task) async {
-    await taskCollection.doc(taskId).update(task.toMap());
+    try {
+      print("updating");
+      await taskCollection.doc(taskId).update(task.toMap());
+      await fetchTasks();
+      showToast("Success: Task updated");
+      print("updated");
+    } on Exception catch (e) {
+      print("An error occurred: $e");
+      showToast("An error occurred: $e");
+    }
   }
 
   // Delete task by ID
   Future<void> deleteTask(String taskId) async {
-    await taskCollection.doc(taskId).delete();
+    try {
+      await taskCollection.doc(taskId).delete();
+      await fetchTasks();
+      showToast("Success Task deleted");
+
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
+    }
   }
+
+  // Method to mark a task as completed
+  Future<void> markTaskAsCompleted(String taskId) async {
+    try {
+      await taskCollection.doc(taskId).update({'isCompleted': true});
+      await fetchTasks(); // Refresh the task list
+      showToast("Task marked as completed!");
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
+    }
+  }
+
 
   // Method to calculate pending and completed tasks
   void calculatePendingAndCompletedTasks() async {

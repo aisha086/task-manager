@@ -45,14 +45,14 @@ class _HomePageState extends State<HomePage> {
             children: [
               const TaskProgressWidget(),
               const SizedBox(height: 20),
-              TaskListWidget(tasks: taskService.tasks),
+              TaskListWidget(),
               const SizedBox(height: 20),
               ActionButtonsWidget(
                 onViewFullList: () {
-                  Get.to(ViewTaskListScreen());
+                  Get.to(() => ViewTaskListScreen());
                 },
                 onAddNewTask: () {
-                 Get.to(const AddTaskScreen());
+                 Get.to(() => const AddTaskScreen());
                 },
               ),
             ],

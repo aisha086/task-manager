@@ -6,7 +6,6 @@ import '../../services/firebase_auth_service.dart';
 import '../../widgets/authentication/auth_button.dart';
 import '../../widgets/authentication/google_button.dart';
 import '../../widgets/authentication/text_form_field.dart';
-import '../../widgets/toast.dart';
 import 'forget_password.dart';
 
 
@@ -73,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         TextButton(
                             onPressed: () {
-                              Get.to(const ResetPasswordPage());
+                              Get.to(() => const ResetPasswordPage());
                             },
                             child: const Text("Forgot Password"))
                       ],
@@ -101,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                         const Text("Don't have an account?"),
                         TextButton(
                             onPressed: () {
-                              Get.to(const SignUp());
+                              Get.to(() => const SignUp());
                             },
                             child: const Text("Sign Up"))
                       ],
@@ -136,7 +135,7 @@ Widget buildTitleSection(BuildContext context) {
   return const Expanded(
     flex: 2,
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,

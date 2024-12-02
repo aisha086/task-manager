@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager/main.dart';
-import 'package:task_manager/screens/home_screen.dart';
 import 'package:task_manager/screens/launching/on_boarding_screens.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     getOnBoardingInfo();
     Timer(const Duration(seconds: 6), () {
-      Get.to(onBoardingAppeared
+      Get.off(() => onBoardingAppeared
                 ? const AuthPage()
                 : const OnboardingPage()
       );

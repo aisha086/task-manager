@@ -36,7 +36,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             alignment: Alignment.bottomLeft,
             height: size.height/5,
             padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-            child: Text(
+            child: const Text(
               "Reset Password",
               textAlign: TextAlign.center,
               style: TextStyle(

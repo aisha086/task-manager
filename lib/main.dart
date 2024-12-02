@@ -6,7 +6,6 @@ import 'package:task_manager/databases/task_service.dart';
 import 'package:task_manager/databases/team_service.dart';
 import 'package:task_manager/screens/authentication/login_screen.dart';
 import 'package:task_manager/screens/home_screen.dart';
-import 'package:task_manager/screens/launching/on_boarding_screens.dart';
 import 'package:task_manager/screens/launching/splash_screen.dart';
 import 'package:task_manager/services/themes_service.dart';
 

@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 class AuthButton extends StatelessWidget {
   const AuthButton(
-      {Key? key,
+      {super.key,
         required this.text,
         required this.onPressed,
-        required this.isSigning})
-      : super(key: key);
+        required this.isSigning});
   final bool isSigning;
   final String text;
   final Function() onPressed;

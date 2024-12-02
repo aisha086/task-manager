@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:task_manager/models/user.dart';
 
 class UserService {
-  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   final CollectionReference userCollection =
   FirebaseFirestore.instance.collection('users');
 

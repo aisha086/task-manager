@@ -5,14 +5,16 @@ import 'package:task_manager/widgets/tasks/custom_text_field.dart';
 import '../../databases/task_service.dart';
 import '../../models/task.dart';
 
-class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+class EditTaskScreen extends StatefulWidget {
+  const EditTaskScreen({super.key, required this.task});
+
+  final Task task;
 
   @override
-  State<AddTaskScreen> createState() => _AddTaskScreenState();
+  State<EditTaskScreen> createState() => _EditTaskScreenState();
 }
 
-class _AddTaskScreenState extends State<AddTaskScreen> {
+class _EditTaskScreenState extends State<EditTaskScreen> {
   final TaskService taskService = Get.find<TaskService>();
 
   final TextEditingController _taskNameController = TextEditingController();
@@ -24,7 +26,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController _labelController = TextEditingController();
 
   // Default priority
-  String _priority = 'Medium';
+  late String _priority;
 
   DateTime? _dueDate;
 
@@ -32,9 +34,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   List<String> _labels = [];
 
   @override
+  void initState() {
+    _taskNameController.text = widget.task.name;
+    _taskDescriptionController.text = widget.task.description;
+    _dueDateController.text = DateFormat('yyyy-MM-dd').format(widget.task.dueDate);
+    _priority = widget.task.priority;
+    _labels = widget.task.labels!=null? widget.task.labels!.cast<String>() :[];
+    _dueDate = widget.task.dueDate;
+    super.initState();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Task")),
+      appBar: AppBar(title: const Text("Edit Task")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -68,7 +82,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ))
                     .toList(),
               ),
-
               const SizedBox(height: 16),
 
               // Due Date Selection
@@ -80,33 +93,33 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
               const SizedBox(height: 16),
 
-            // Labels Section
-            const Text(
-              "Labels",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
-            ),
-            const SizedBox(height: 8),
+              // Labels Section
+              const Text(
+                "Labels",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+              ),
+              const SizedBox(height: 8),
               labelField(),
-            const SizedBox(height: 8),
+              const SizedBox(height: 8),
 
-            // Display Labels
-            Wrap(
-              spacing: 8.0,
-              children: _labels
-                  .map(
-                    (label) => Chip(
-                  label: Text(label),
-                  deleteIcon: const Icon(Icons.close),
-                  onDeleted: () => _removeLabel(label),
-                ),
-              )
-                  .toList(),
-            ),
-            const SizedBox(height: 16),
+              // Display Labels
+              Wrap(
+                spacing: 8.0,
+                children: _labels
+                    .map(
+                      (label) => Chip(
+                    label: Text(label),
+                    deleteIcon: const Icon(Icons.close),
+                    onDeleted: () => _removeLabel(label),
+                  ),
+                )
+                    .toList(),
+              ),
+              const SizedBox(height: 16),
 
               // Save Button
               ElevatedButton(
-                onPressed: _addTask,
+                onPressed: () async =>_editTask(),
                 child: const Text("Save Task"),
               ),
             ],
@@ -115,7 +128,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       ),
     );
   }
-
 
   // Function to pick the due date
   _selectDate() async {
@@ -134,13 +146,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   // Function to add a task
-  _addTask() async {
+  _editTask() async {
     if (_taskNameController.text.isEmpty ||
         _taskDescriptionController.text.isEmpty ||
         _dueDate == null) {
       Get.snackbar("Error", "Please fill all the fields");
       return;
     }
+
+    print(_priority);
 
     Task newTask = Task(
         name: _taskNameController.text,
@@ -153,7 +167,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         isCompleted: false,
         teamId: null);
 
-    await taskService.addTask(newTask);
+    await taskService.updateTask(widget.task.taskId,newTask);
     Get.back(); // Go back to the previous screen
   }
 

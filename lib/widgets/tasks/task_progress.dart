@@ -22,30 +22,35 @@ class _TaskProgressWidgetState extends State<TaskProgressWidget> {
     double progress = taskService.completed.value / (taskService.pending.value + taskService.completed.value);
     int total = (taskService.pending.value + taskService.completed.value);
     Size size = MediaQuery.of(context).size;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          'Task Progress',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(width: 10),
-        CircularPercentIndicator(
-          radius: size.width/5,
-          lineWidth: 12.0,
-          percent: total == 0 ? 0 : progress,
-          center: Text(
-            '${taskService.completed.value}/$total',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.green,
+    return Obx(
+      () {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              'Task Progress',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-          ),
-          progressColor: Colors.green,
-          backgroundColor: Colors.grey[300]!,
-        ),
-      ],
+            const SizedBox(width: 10),
+            CircularPercentIndicator(
+              radius: size.width/5,
+              lineWidth: 12.0,
+              percent: total == 0 ? 0 : progress,
+              center: Text(
+                '${taskService.completed.value}/$total',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.green,
+                ),
+              ),
+              progressColor: Colors.green,
+              backgroundColor: Colors.grey[300]!,
+            ),
+          ],
+        );
+      }
     );
   }
 }

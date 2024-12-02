@@ -6,8 +6,9 @@ class Task {
   String description;
   String priority; // High, Medium, Low
   DateTime dueDate;
-  List labels;
-  List assignedTeamMembers;
+  List? labels;
+  List? assignedTeamMembers;
+  String? teamId;
   String taskId;
   bool isCompleted;
 
@@ -16,8 +17,9 @@ class Task {
     required this.description,
     required this.priority,
     required this.dueDate,
-    required this.labels,
-    required this.assignedTeamMembers,
+    this.labels,
+    this.assignedTeamMembers,
+    this.teamId,
     required this.taskId,
     required this.isCompleted
   });
@@ -30,6 +32,7 @@ class Task {
       'dueDate': dueDate,
       'labels': labels,
       'assignedTeamMembers': assignedTeamMembers,
+      'teamId': teamId,
       'userId': FirebaseAuth.instance.currentUser!.uid,
       'isCompleted': isCompleted
     };
@@ -44,9 +47,10 @@ class Task {
       description: map['description'] as String,
       priority: map['priority'] as String,
       dueDate: timestamp.toDate(),
-      labels: map['labels'] as List,
-      assignedTeamMembers: map['assignedTeamMembers'] as List,
+      labels: map['labels'] as List?,
+      assignedTeamMembers: map['assignedTeamMembers'] as List?,
       taskId: docId,
+      teamId: map['teamId'] as String?,
       isCompleted: map['isCompleted'] as bool
     );
   }

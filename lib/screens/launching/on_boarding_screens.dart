@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/main.dart';
-import 'package:task_manager/screens/home_screen.dart';
 
 import '../../data/on_boarding_data.dart';
 
@@ -116,7 +115,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               currentIndex++;
             } else {
               setOnBoardingToTrue();
-              Get.to(const AuthPage());
+              Get.to(() => const AuthPage());
             }
           });
         },
