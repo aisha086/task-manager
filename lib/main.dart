@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:task_manager/databases/task_service.dart';
 import 'package:task_manager/databases/team_service.dart';
 import 'package:task_manager/screens/authentication/login_screen.dart';
+import 'package:task_manager/screens/chat/chat_screen_main.dart';
 import 'package:task_manager/screens/home_screen.dart';
 import 'package:task_manager/screens/launching/splash_screen.dart';
 import 'package:task_manager/services/themes_service.dart';
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
-      home: const SplashScreen(),
+      home: ChatScreen(teamId: 'O2F2gzy1Ia3RXcaQeIVl'),
+      //const SplashScreen(),
     );
   }
 }
