@@ -1,34 +1,41 @@
+
 class UserModel {
   String userId;
-  String userName;
-  String userEmail;
-  List<String> teams; // List of team IDs the user is part of
-  String docId;
+  String name;
+  String email;
+  List<String> tasks;
+  List<String> teams;
 
   UserModel({
     required this.userId,
-    required this.userName,
-    required this.userEmail,
+    required this.name,
+    required this.email,
+    required this.tasks,
     required this.teams,
-    required this.docId
   });
 
+  // Convert UserModel to a Map to store in Firestore
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
-      'userName': userName,
-      'userEmail': userEmail,
+      'name': name,
+      'email': email,
+      'tasks': tasks,
       'teams': teams,
-    };
-  }
 
-  factory UserModel.fromMap(String docID, Map<String, dynamic> map) {
+    };
+
+  }
+  // Convert Firestore DocumentSnapshot to UserModel
+  factory UserModel.fromMap(String id, Map<String, dynamic> map) {
     return UserModel(
-      userId: map['userId'] as String,
-      userName: map['userName'] as String,
-      userEmail: map['userEmail'] as String,
-      teams: map['teams'] as List<String>,
-      docId: docID
+      userId: id,
+      name: map['name'],
+      email: map['email'],
+      tasks: List<String>.from(map['tasks']),
+      teams: List<String>.from(map['teams']),
     );
   }
+
 }
+

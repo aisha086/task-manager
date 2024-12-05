@@ -1,55 +1,85 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/toast.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  signUpWithEmailAndPassword(String email, String password) async {
+  // Sign Up with email and password
+  Future<UserCredential?> signUpWithEmailAndPassword(String email, String password, String name) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      _auth.signOut();
-      return true;
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // After user is created, store user details in Firestore
+      await _storeUserDetails(userCredential.user!, name, email);
+
+      // Sign out user after registration (if you don't want to auto-login)
+      await _auth.signOut();
+
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         showToast("The email is already in use.");
-      }
-      else if (e.code == 'invalid-email') {
+      } else if (e.code == 'invalid-email') {
         showToast("The email address is invalid");
-      }
-      else {
-        showToast("An error occurred : ${e.code}");
+      } else {
+        showToast("An error occurred: ${e.code}");
       }
     }
-    return null;
+    return null; // Return null if there's an error
   }
 
+  // Store user details in Firestore
+  Future<void> _storeUserDetails(User user, String name, String email) async {
+    try {
+      // Reference to the Firestore 'users' collection
+      final userRef = _firestore.collection('users').doc(user.uid);
+
+      // Add user details to Firestore
+      await userRef.set({
+
+        'name': name,
+        'email': email,
+        'teams': [],
+        'tasks':[]
+      });
+
+      showToast("User details stored successfully.");
+    } catch (e) {
+      showToast("Error saving user details: $e");
+    }
+  }
+
+  // Sign In with email and password
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
 
       return credential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
         showToast("Invalid email");
-      }
-      else if (e.code == 'user-disabled') {
+      } else if (e.code == 'user-disabled') {
         showToast("The user is disabled");
-      }
-      else if (e.code == 'user-not-found') {
+      } else if (e.code == 'user-not-found') {
         showToast("User not found");
-      }
-      else if (e.code == 'wrong-password') {
+      } else if (e.code == 'wrong-password') {
         showToast("Wrong Password");
-      }
-      else {
-        showToast("An error occurred : ${e.code}");
+      } else {
+        showToast("An error occurred: ${e.code}");
       }
     }
     return null;
   }
+
 
   Future<bool> resetPassword(String email) async {
     try {

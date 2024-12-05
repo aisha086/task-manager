@@ -18,7 +18,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Get.put(TaskService());
-  Get.put(TeamService());
+ // Get.put(TeamService());
   runApp(const MyApp());
 }
 
@@ -34,8 +34,9 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
-      home: ChatScreen(teamId: 'O2F2gzy1Ia3RXcaQeIVl'),
-      //const SplashScreen(),
+      home:
+      //ChatScreen(teamId: 'O2F2gzy1Ia3RXcaQeIVl'),
+      const SplashScreen(),
     );
   }
 }
