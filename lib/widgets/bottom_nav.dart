@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/screens/home_screen.dart';
-import 'package:task_manager/screens/teams/mainteams_screen.dart';
+import 'package:task_manager/screens/teams/create_team_screen.dart';
 
 import '../screens/chat/chat_screen_main.dart';
 import '../screens/settings.dart';

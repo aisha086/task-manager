@@ -15,6 +15,8 @@ class FirebaseAuthService {
         password: password,
       );
 
+      _auth.currentUser!.updateDisplayName(name);
+
       // After user is created, store user details in Firestore
       await _storeUserDetails(userCredential.user!, name, email);
 
@@ -104,7 +106,9 @@ class FirebaseAuthService {
       final credential = GoogleAuthProvider.credential(
           accessToken: gAuth.accessToken, idToken: gAuth.idToken);
 
-      return await _auth.signInWithCredential(credential);
+      await _auth.signInWithCredential(credential);
+      await _auth.currentUser!.linkWithCredential(credential);
+      return;
     }
     catch(e){
       showToast("An error occurred $e");

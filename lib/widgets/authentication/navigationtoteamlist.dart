@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../screens/teams/teamsHomeScreen.dart';
+import '../../screens/teams/teams_home_screen.dart';
 
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,7 +18,7 @@ void navigateToTeamsListScreen(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TeamsListScreen(userId: FirebaseAuth.instance.currentUser!.uid),
+        builder: (context) => TeamsListScreen(),
       ),
     );
   } else {

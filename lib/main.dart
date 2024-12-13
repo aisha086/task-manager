@@ -18,6 +18,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Get.put(TaskService());
+  Get.put(TeamService());
  // Get.put(TeamService());
   runApp(const MyApp());
 }
@@ -51,7 +52,7 @@ class AuthPage extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
-            return const HomePage();  //will add dashboard here
+            return const DashboardPage();  //will add dashboard here
           } else{
             return const LoginPage();
           }

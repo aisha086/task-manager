@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:task_manager/databases/user_service.dart';
 import 'package:task_manager/widgets/tasks/custom_text_field.dart';
 import '../../databases/task_service.dart';
+import '../../databases/team_service.dart';
 import '../../models/task.dart';
+import '../../models/team.dart';
+import '../../widgets/toast.dart';
 
 class EditTaskScreen extends StatefulWidget {
   const EditTaskScreen({super.key, required this.task});
@@ -16,6 +20,8 @@ class EditTaskScreen extends StatefulWidget {
 
 class _EditTaskScreenState extends State<EditTaskScreen> {
   final TaskService taskService = Get.find<TaskService>();
+  final TeamService teamService = Get.find<TeamService>();  // Initialize TeamService
+  final UserService userService = UserService();
 
   final TextEditingController _taskNameController = TextEditingController();
 
@@ -33,6 +39,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   // List to store task labels/tags
   List<String> _labels = [];
 
+  Team? _selectedTeam;
+  String? _selectedMember;
+  List<String> _assignedMembers = [];
+  List<String> members = [];
+
+
   @override
   void initState() {
     _taskNameController.text = widget.task.name;
@@ -41,6 +53,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     _priority = widget.task.priority;
     _labels = widget.task.labels!=null? widget.task.labels!.cast<String>() :[];
     _dueDate = widget.task.dueDate;
+    getMembers();
+    getTeam();
     super.initState();
   }
 
@@ -92,6 +106,86 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                 onTap: _selectDate,
               ),
               const SizedBox(height: 16),
+              DropdownButtonFormField<Team>(
+                value: _selectedTeam,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedTeam = value;
+                    _selectedMember =
+                    null; // Reset selected member when team changes
+                    getAllMembers();
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Team',
+                  border: OutlineInputBorder(),
+                ),
+                items: [
+                  const DropdownMenuItem(
+                      value: null, child: Text("Select Team")),
+                  ...teamService.teams.map((team) => DropdownMenuItem(
+                    value: team,
+                    child: Text(team.name),
+                  )),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Assigned Member Dropdown (Enabled if Team is selected)
+              if (_selectedTeam != null)
+                DropdownButtonFormField<String>(
+                  value: _selectedMember,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _selectedMember = value;
+                        if (!_assignedMembers.contains(_selectedMember)) {
+                          _assignedMembers.add(value); // Add selected member
+                        } else {
+                          showToast("Already added");
+                        }
+                      });
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Assign Member',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: members
+                      .map((member) => DropdownMenuItem(
+                    value: member,
+                    child: Text(member),
+                  ))
+                      .toList(),
+                ),
+              const SizedBox(height: 16),
+
+              // Display Assigned Members with option to remove
+              if (_assignedMembers.isNotEmpty) ...[
+                const Text(
+                  "Assigned Members",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                ),
+                const SizedBox(height: 8),
+                Column(
+                  children: _assignedMembers.map((member) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(member),
+                        IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: () {
+                            setState(() {
+                              _assignedMembers.remove(member); // Remove member
+                            });
+                          },
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ],
 
               // Labels Section
               const Text(
@@ -209,4 +303,29 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       _labels.remove(label);
     });
   }
+
+  getMembers() async {
+    print("getting emails");
+    List<String> membersList = [];
+    if(widget.task.assignedTeamMembers != null) {
+      membersList = await userService.getEmailsByIds(widget.task.assignedTeamMembers!);
+    }    setState(() {
+      _assignedMembers = membersList;
+    });
+    print(membersList);
+    print(_assignedMembers);
+  }
+
+  getAllMembers() async {
+    List<String> membersList =
+    await userService.getEmailsByIds(_selectedTeam!.teamMembers);
+    setState(() {
+      members = membersList;
+    });
+  }
+
+  getTeam(){
+    _selectedTeam = teamService.teams.where((t) => t.teamId == widget.task.teamId).first;
+  }
+
 }

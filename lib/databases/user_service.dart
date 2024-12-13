@@ -29,4 +29,45 @@ class UserService {
   Future<void> deleteUser(String userId) async {
     await userCollection.doc(userId).delete();
   }
+
+  Future<List<String>> getMemberIdsByEmails(List emails) async {
+    List<String> memberIds = [];
+    memberIds.add(FirebaseAuth.instance.currentUser!.uid);
+    try {
+      for (String email in emails) {
+        QuerySnapshot querySnapshot = await userCollection
+            .where('email', isEqualTo: email)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          if (FirebaseAuth.instance.currentUser!.uid !=
+              querySnapshot.docs.first.id) {
+            memberIds.add(querySnapshot.docs.first.id);
+          }
+        }
+      }
+    } catch (e) {
+      throw Exception('Error fetching user IDs: $e');
+    }
+    return memberIds;
+  }
+
+  Future<List<String>> getEmailsByIds(List userIds) async {
+    try {
+      List<String> emails = [];
+      for (String userId in userIds) {
+        DocumentSnapshot userDoc = await userCollection.doc(userId).get();
+        if (userDoc.exists) {
+          String? email = userDoc['email'] as String?;
+          if (email != null) {
+            emails.add(email);
+          }
+        }
+      }
+      return emails;
+    } catch (e) {
+      print('Error fetching emails: $e');
+      return [];
+    }
+  }
 }

@@ -41,6 +41,7 @@ class TaskService extends GetxController {
     try{
       print("fetching");
       String currentUserId = _auth.currentUser!.uid;
+      print(currentUserId);
       QuerySnapshot snapshot = await taskCollection
           .where('userId', isEqualTo: currentUserId) // Fetch tasks by userId
           .get();
@@ -50,8 +51,9 @@ class TaskService extends GetxController {
       }).toList());
 
       tasks.sort((a, b) => a.dueDate.compareTo(b.dueDate));
-      calculatePendingAndCompletedTasks();
+      await calculatePendingAndCompletedTasks();
       print("fetched");
+      print(tasks.length);
     }
     catch(e){
       print("fetch");
@@ -99,7 +101,7 @@ class TaskService extends GetxController {
 
 
   // Method to calculate pending and completed tasks
-  void calculatePendingAndCompletedTasks() async {
+  calculatePendingAndCompletedTasks() async {
 
     int completedCount = 0;
     int pendingCount = 0;
