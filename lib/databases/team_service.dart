@@ -26,6 +26,46 @@ class TeamService extends GetxController {
     fetchTeams();
     return docRef.id; // Return the generated team ID
   }
+  Future<void> sendTeamInvitation(String teamName, String inviteeEmail, String teamId, String inviterId) async {
+    final invitationDoc = FirebaseFirestore.instance.collection('invitations').doc();
+
+    await invitationDoc.set({
+      'invitationId': invitationDoc.id,
+      'teamID': teamId,
+      'teamName': teamName,
+      'invitorID': inviterId,
+      'inviteeEmail': inviteeEmail,
+      'status': 'pending',
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    // Optionally, integrate an email service to notify the user.
+    print('Invitation sent to $inviteeEmail');
+  }
+  Future<void> acceptTeamInvitation(String invitationId, String teamId, String userId) async {
+    final invitationDoc = FirebaseFirestore.instance.collection('invitations').doc(invitationId);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      // Update invitation status
+      transaction.update(invitationDoc, {'status': 'accepted'});
+
+      // Add user to team
+      final teamDoc = FirebaseFirestore.instance.collection('teams').doc(teamId);
+      transaction.update(teamDoc, {
+        'members': FieldValue.arrayUnion([userId]),
+      });
+
+      // Update user teams
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+      transaction.update(userDoc, {
+        'teams': FieldValue.arrayUnion([teamId]),
+      });
+    });
+  }
+  Future<void> rejectTeamInvitation(String invitationId) async {
+    await FirebaseFirestore.instance.collection('invitations').doc(invitationId).update({'status': 'rejected'});
+    print('Invitation rejected');
+  }
 
   // Fetch teams for the current user (teams where the user is a member)
   Future<void> fetchTeams() async {

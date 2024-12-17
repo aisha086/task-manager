@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager/databases/task_service.dart';
@@ -23,11 +24,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   final List<Widget> _pages = [
     const DashboardPage(), // Home Dashboard
     const Placeholder(), // Placeholder for Teams (handled in onTap)
-    ChatScreen(teamId: 'O2F2gzy1Ia3RXcaQeIVl'), // Chat Page
+   // MainChatScreen(currentUserId:  currentUser!.uid,), // Chat Page
     const SettingsPage(), // Settings Page
   ];
 
@@ -101,7 +103,7 @@ class DashboardPage extends StatelessWidget {
           )
         ],
       ),
-      drawer: const HomeScreenDrawer(),
+      drawer:  HomeScreenDrawer(),
       body: RefreshIndicator(
         onRefresh: () async {
           await Get.find<TaskService>().fetchTasks();

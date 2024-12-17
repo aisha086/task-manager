@@ -24,7 +24,7 @@ class _MainBottomNavBarState extends State<MainBottomNavBar> {
   final List<Widget> _screens = [
     HomePage(), // Replace with your actual HomeScreen class
     CreateTeamScreen(), // Replace with your actual TeamsScreen class
-    ChatScreen(teamId: 'O2F2gzy1Ia3RXcaQeIVl'), // Replace with your actual ChatScreen class
+    MainChatScreen(currentUserId: '',), // Replace with your actual ChatScreen class
     SettingsPage(), // Replace with your actual SettingsScreen class
   ];
 

@@ -7,6 +7,8 @@ import 'package:task_manager/databases/user_service.dart';
 import 'package:task_manager/models/team.dart';
 import 'package:task_manager/widgets/toast.dart';
 
+import '../../services/notification_service.dart';
+
 class CreateTeamScreen extends StatefulWidget {
   const CreateTeamScreen({super.key});
 
@@ -17,6 +19,7 @@ class CreateTeamScreen extends StatefulWidget {
 class _CreateTeamScreenState extends State<CreateTeamScreen> {
   final _teamNameController = TextEditingController();
   final _emailController = TextEditingController();
+  final NotificationService _notificationService = NotificationService();
   final List<String> _memberEmails = [];  // List to store email addresses
   bool _isLoading = false;
   TeamService teamService = Get.find();
@@ -101,36 +104,49 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
     showToast('Email added successfully');
   }
 
-  addTeam() async {
+
+  Future<void> addTeam() async {
+    if (_teamNameController.text.isEmpty || _memberEmails.isEmpty) {
+      showToast('Please provide a team name and add at least one member');
+      return;
+    }
+    UserService userService = UserService();
 
     try {
-      if (_teamNameController.text.isEmpty || _memberEmails.isEmpty) {
-            // Show an error if the team name or member list is empty
-        showToast('Please provide a team name and add at least one member');
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Please provide a team name and add at least one member'),
-            ));
-            return;
-          }
-      UserService userService = UserService();
+      setState(() => _isLoading = true);
 
+      // Step 1: Create the team in Firestore
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
       List memberIds = await userService.getMemberIdsByEmails(_memberEmails);
 
-      Team team = Team(teamId: '', name: _teamNameController.text.trim(),
-          teamMembers: memberIds,
-          creationDate: DateTime.now(),
-          createdBy: FirebaseAuth.instance.currentUser!.uid
-      );
+      DocumentReference teamRef =
+      await FirebaseFirestore.instance.collection('teams').add({
+        'name': _teamNameController.text.trim(),
+        'members': [], // No members until they accept the request
+        'createdBy': currentUserId,
+        'creationDate': FieldValue.serverTimestamp(),
+      });
 
-      await teamService.addTeam(team);
+      String teamId = teamRef.id;
 
-      Get.back();
-    } on Exception catch (e) {
-      showToast("Oops An error occured");
+      // Step 2: Send notifications to members
+      for (var email in _memberEmails) {
+        await _notificationService.sendJoinRequest(
+          senderId: currentUserId,
+          receiverEmail: email,
+          teamId: teamId,
+          teamName: _teamNameController.text.trim(),
+        );
+      }
+
+      showToast('Team created. Members have been notified.');
+      Navigator.pop(context);
+    } catch (e) {
+      showToast('Error creating team: $e');
+    } finally {
+      setState(() => _isLoading = false);
     }
-
   }
-
   // Handle team creation
   // Future<void> _createTeam() async {
   //   final teamName = _teamNameController.text.trim();

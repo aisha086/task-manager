@@ -91,7 +91,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const Text("OR"),
                     const SizedBox(
-                      height: 15,
+                      height:20 ,
+                      width: 50,
                     ),
                     GoogleButton(isSigning: isGoogleSigning),
                     Row(

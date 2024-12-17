@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager/databases/task_service.dart';
@@ -17,12 +18,23 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen(_firebaseMessagingForegroundHandler);
   Get.put(TaskService());
   Get.put(TeamService());
  // Get.put(TeamService());
   runApp(const MyApp());
 }
+Future<void> _firebaseMessagingBackgroundHandler(
+    RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+}
 
+Future<void> _firebaseMessagingForegroundHandler(
+    RemoteMessage message) async {
+  print("Received a message: ${message.notification?.title}");
+  // Show a local notification or a dialog
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
