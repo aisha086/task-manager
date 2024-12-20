@@ -154,7 +154,7 @@ Widget buildTitleSection(BuildContext context) {
             "Lets start getting organized",
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 26,
+              fontSize: 22,
               // color: MyTheme.lightCanvasColor,
             ),
           )

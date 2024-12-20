@@ -116,5 +116,6 @@ class TaskService extends GetxController {
 
     completed.value = completedCount;
     pending.value = pendingCount;
+
   }
 }

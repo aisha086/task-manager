@@ -64,6 +64,7 @@ class FirebaseAuthService {
         email: email,
         password: password,
       );
+      print(credential.user);
 
       return credential.user;
     } on FirebaseAuthException catch (e) {
@@ -107,10 +108,15 @@ class FirebaseAuthService {
           accessToken: gAuth.accessToken, idToken: gAuth.idToken);
 
       await _auth.signInWithCredential(credential);
-      await _auth.currentUser!.linkWithCredential(credential);
+      // if(_auth.currentUser != null) {
+      //   await _auth.currentUser!.linkWithCredential(credential);
+      print(_auth.currentUser!.uid);
+      print(_auth.currentUser!.email);
+      // }
       return;
     }
     catch(e){
+      print("An error occurred $e");
       showToast("An error occurred $e");
     }
   }

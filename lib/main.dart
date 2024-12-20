@@ -20,8 +20,7 @@ void main() async {
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen(_firebaseMessagingForegroundHandler);
-  Get.put(TaskService());
-  Get.put(TeamService());
+
  // Get.put(TeamService());
   runApp(const MyApp());
 }
@@ -64,7 +63,7 @@ class AuthPage extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
-            return const DashboardPage();  //will add dashboard here
+            return DashboardPage();  //will add dashboard here
           } else{
             return const LoginPage();
           }

@@ -17,7 +17,7 @@ class GoogleButton extends StatelessWidget {
         style: ButtonStyle(
             // backgroundColor: WidgetStatePropertyAll((MyTheme.lightIconColor),
             fixedSize:
-            WidgetStatePropertyAll( Size(size.width/2, 50)),
+            WidgetStatePropertyAll( Size(size.width/1.7, 50)),
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25)))),
         onPressed: () => authService.signInWithGoogle(),
@@ -28,7 +28,7 @@ class GoogleButton extends StatelessWidget {
           children: [
             Text(
               "Continue with ",
-              style: TextStyle(fontSize: 18,color: Colors.white),
+              style: TextStyle(fontSize: 16,color: Colors.white),
             ),
             Icon(FontAwesomeIcons.google,color: Colors.white,)
           ],

@@ -38,7 +38,7 @@ class _TaskProgressWidgetState extends State<TaskProgressWidget> {
               lineWidth: 12.0,
               percent: total == 0 ? 0 : progress,
               center: Text(
-                '${taskService.completed.value}/$total',
+                '${taskService.completed.value}/${taskService.pending.value + taskService.completed.value}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,

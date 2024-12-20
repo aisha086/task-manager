@@ -15,81 +15,14 @@ import '../widgets/dashboard/action_buttons.dart';
 import '../widgets/tasks/task_list.dart';
 import '../widgets/tasks/task_progress.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-  final currentUser = FirebaseAuth.instance.currentUser;
-
-  final List<Widget> _pages = [
-    const DashboardPage(), // Home Dashboard
-    const Placeholder(), // Placeholder for Teams (handled in onTap)
-   // MainChatScreen(currentUserId:  currentUser!.uid,), // Chat Page
-    const SettingsPage(), // Settings Page
-  ];
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task Dashboard'),
-        actions: [
-          IconButton(
-            onPressed: () => FirebaseAuthService().signOut(),
-            icon: const Icon(Icons.logout_rounded),
-          )
-        ],
-      ),
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if (index == 1) {
-            // Handle Teams navigation separately
-            navigateToTeamsListScreen(context);
-          } else {
-            // Change the index for other tabs
-            setState(() {
-              _currentIndex = index;
-            });
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'Teams',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-      ),
-    );
-  }
-}
 
 class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+  DashboardPage({super.key}){
+    Get.put(TaskService());
+    Get.put(TeamService());
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
