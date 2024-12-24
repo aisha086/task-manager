@@ -44,10 +44,12 @@ dependencies:
   get: ^4.6.6
   flutter_svg: ^2.0.16
   shared_preferences: ^2.3.3
+  flutter_local_notifications: ^18.0.1
   cloud_firestore: ^5.5.0
   percent_indicator: ^4.2.4
   intl: ^0.20.1
   firebase_messaging: ^15.1.6
+  provider: ^6.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

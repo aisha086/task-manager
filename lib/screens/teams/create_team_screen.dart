@@ -6,7 +6,6 @@ import 'package:task_manager/databases/team_service.dart';
 import 'package:task_manager/databases/user_service.dart';
 import 'package:task_manager/models/team.dart';
 import 'package:task_manager/widgets/toast.dart';
-
 import '../../services/notification_service.dart';
 
 class CreateTeamScreen extends StatefulWidget {
@@ -27,23 +26,41 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Team')),
+      appBar: AppBar(
+        title: const Text('Create Team'),
+        backgroundColor: Colors.blue, // Set to your navy color
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _teamNameController,
-              decoration: const InputDecoration(labelText: 'Team Name'),
+              decoration: const InputDecoration(
+                labelText: 'Team Name',
+                labelStyle: TextStyle(color: Colors.blue), // Navy color for labels
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue), // Navy color focus border
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Add Member by Email'),
+              decoration: const InputDecoration(
+                labelText: 'Add Member by Email',
+                labelStyle: TextStyle(color: Colors.blue), // Navy color for labels
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue), // Navy color focus border
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _addMemberEmail,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.blue, // White text
+              ),
               child: const Text('Add Member'),
             ),
             const SizedBox(height: 16),
@@ -55,7 +72,7 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
                   return ListTile(
                     title: Text(_memberEmails[index]),
                     trailing: IconButton(
-                      icon: const Icon(Icons.remove_circle),
+                      icon: const Icon(Icons.remove_circle, color: Colors.blue),
                       onPressed: () {
                         setState(() {
                           _memberEmails.removeAt(index);
@@ -71,6 +88,9 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
               onPressed: addTeam,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.blue, // White text
+              ),
               child: const Text('Create Team'),
             ),
           ],
@@ -103,7 +123,6 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
     _emailController.clear(); // Clear the input field
     showToast('Email added successfully');
   }
-
 
   Future<void> addTeam() async {
     if (_teamNameController.text.isEmpty || _memberEmails.isEmpty) {
@@ -147,67 +166,5 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
       setState(() => _isLoading = false);
     }
   }
-  // Handle team creation
-  // Future<void> _createTeam() async {
-  //   final teamName = _teamNameController.text.trim();
-  //   if (teamName.isEmpty || _memberEmails.isEmpty) {
-  //     // Show an error if the team name or member list is empty
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content: Text('Please provide a team name and add at least one member'),
-  //     ));
-  //     return;
-  //   }
-  //
-  //   setState(() {
-  //     _isLoading = true;  // Show loading indicator
-  //   });
-  //
-  //   try {
-  //     // Get the current user's ID
-  //     final userId = FirebaseAuth.instance.currentUser?.uid;
-  //
-  //     if (userId == null) {
-  //       // Show error if user is not logged in
-  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //         content: Text('User not logged in'),
-  //       ));
-  //       return;
-  //     }
-  //
-  //     // 1. Create a new team in Firestore
-  //     final teamRef = await FirebaseFirestore.instance.collection('teams').add({
-  //       'name': teamName,
-  //       'members': [_memberEmails],
-  //       'createdBy': userId,  // Store the creator's userId
-  //       'createdAt': FieldValue.serverTimestamp(),
-  //     });
-  //
-  //     // 2. Update the user document with the new team ID (corrected)
-  //     await FirebaseFirestore.instance.collection('users').doc(userId).update({
-  //       'teams': FieldValue.arrayUnion([teamRef.id]),  // Add the teamId to the user's teams array
-  //     });
-  //
-  //     // Optionally, navigate back or show a success message
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content: Text('Team created successfully'),
-  //     ));
-  //
-  //     // Clear inputs after team creation
-  //     setState(() {
-  //       _memberEmails.clear();
-  //       _teamNameController.clear();
-  //     });
-  //   } catch (e) {
-  //     // Handle errors
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //       content: Text('Error creating team: $e'),
-  //     ));
-  //   } finally {
-  //     setState(() {
-  //       _isLoading = false;  // Hide loading indicator
-  //     });
-  //   }
-  // }
-
 
 }

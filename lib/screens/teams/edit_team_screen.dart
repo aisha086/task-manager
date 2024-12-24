@@ -21,21 +21,20 @@ class EditTeamScreen extends StatefulWidget {
 class _EditTeamScreenState extends State<EditTeamScreen> {
   final TextEditingController _teamNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final List _members = [];
+  final List<String> _members = [];
   final TeamService _teamService = Get.find();
   final UserService userService = UserService();
 
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     _teamNameController.text = widget.team.name;
-   getEmails();
+    _fetchEmails();
   }
 
   void _addMemberEmail() {
     final email = _emailController.text.trim();
 
-    // Regular expression for email validation
     final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
 
     if (email.isEmpty) {
@@ -48,11 +47,16 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
       return;
     }
 
+    if (_members.contains(email)) {
+      showToast('Email is already in the team');
+      return;
+    }
+
     setState(() {
       _members.add(email);
     });
 
-    _emailController.clear(); // Clear the input field
+    _emailController.clear();
     showToast('Email added successfully');
   }
 
@@ -60,17 +64,28 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
     setState(() {
       _members.remove(email);
     });
+    showToast('Member removed successfully');
   }
 
   void _updateTeam() async {
-
-    UserService userService = UserService();
-
-    List memberIds = await userService.getMemberIdsByEmails(_members);
+    final memberIds = await userService.getMemberIdsByEmails(_members);
     final updatedTeamName = _teamNameController.text.trim();
-    Team newTeam = Team(teamId: widget.team.teamId, name: updatedTeamName, teamMembers: memberIds, creationDate: DateTime.now(), createdBy: '');
+    final newTeam = Team(
+      teamId: widget.team.teamId,
+      name: updatedTeamName,
+      teamMembers: memberIds,
+      creationDate: DateTime.now(),
+      createdBy: widget.team.createdBy,
+    );
     await _teamService.updateTeam(widget.team.teamId, newTeam);
     Navigator.pop(context);
+  }
+
+  Future<void> _fetchEmails() async {
+    final memberEmails = await userService.getEmailsByIds(widget.team.teamMembers);
+    setState(() {
+      _members.addAll(memberEmails);
+    });
   }
 
   @override
@@ -93,16 +108,22 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
           children: [
             TextField(
               controller: _teamNameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Team Name',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text('Members:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            const Text(
+              'Members:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
+              child: _members.isNotEmpty
+                  ? ListView.separated(
                 itemCount: _members.length,
+                separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final email = _members[index];
                   return ListTile(
@@ -113,37 +134,25 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
                     ),
                   );
                 },
+              )
+                  : const Center(
+                child: Text(
+                  'No members added yet',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Add Member'),
-                      content: TextField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(labelText: 'Member Email'),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _addMemberEmail();
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Add'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: const Text('Add Member'),
+            const SizedBox(height: 20),
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: () => _showAddMemberDialog(context),
+                icon: const Icon(Icons.person_add),
+                label: const Text('Add Member'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                ),
+              ),
             ),
           ],
         ),
@@ -151,13 +160,34 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
     );
   }
 
-  getEmails() async {
-    final _memberEmails = await userService.getEmailsByIds(widget.team.teamMembers);
-
-    setState(() {
-      _members.addAll(_memberEmails);
-    });
+  void _showAddMemberDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Member'),
+          content: TextField(
+            controller: _emailController,
+            decoration: InputDecoration(
+              labelText: 'Member Email',
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _addMemberEmail();
+                Navigator.pop(context);
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
-
-

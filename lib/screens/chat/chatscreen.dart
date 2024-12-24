@@ -46,8 +46,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Access the current theme
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text(widget.otherUserName)),
+      appBar: AppBar(
+        title: Text(widget.otherUserName),
+        backgroundColor: theme.appBarTheme.backgroundColor, // AppBar color based on theme
+        foregroundColor: theme.appBarTheme.foregroundColor, // AppBar text color based on theme
+      ),
       body: Column(
         children: [
           // Display Messages
@@ -76,17 +83,20 @@ class _ChatScreenState extends State<ChatScreen> {
                       alignment:
                       isMe ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
-                        margin:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        padding:
-                        EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                         decoration: BoxDecoration(
-                          color: isMe ? Colors.blue : Colors.green[300],
+                          color: isMe
+                              ? theme.cardColor // Current user's message bubble color based on theme
+                              : theme.cardColor, // Other user's message bubble color based on theme
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
                           message['text'],
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: theme.textTheme.bodyLarge?.color, // Text color based on theme
+                          ),
                         ),
                       ),
                     );
@@ -109,11 +119,13 @@ class _ChatScreenState extends State<ChatScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
+                      filled: true,
+                      fillColor: theme.canvasColor, // Input field background color based on theme
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send, color: Colors.blue),
+                  icon: Icon(Icons.send, color: theme.iconTheme.color), // Send button color based on theme
                   onPressed: sendMessage,
                 ),
               ],

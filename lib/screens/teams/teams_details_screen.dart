@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager/databases/team_service.dart';
 import 'package:task_manager/screens/teams/edit_team_screen.dart';
-
 import '../../models/team.dart';
 
 class TeamDetailsScreen extends StatefulWidget {
-  // final String teamId;
   final Team team;
 
   const TeamDetailsScreen({super.key, required this.team});
@@ -18,58 +16,43 @@ class TeamDetailsScreen extends StatefulWidget {
 }
 
 class _TeamDetailsScreenState extends State<TeamDetailsScreen> {
-  // late var teamData;
-  // bool isLoading = true;
   TeamService teamService = Get.find();
 
   @override
-  void initState() {
-    super.initState();
-    // _fetchTeamData();
-  }
-
-  // Future<void> _fetchTeamData() async {
-  //   try {
-  //     final doc = await FirebaseFirestore.instance
-  //         .collection('teams')
-  //         .doc(widget.teamId)
-  //         .get();
-  //
-  //     teamData = teamService.teams.where((a)=>widget.teamId == a.teamId);
-  //
-  //     setState(() {
-  //       teamData = doc;
-  //       isLoading = false;
-  //     });
-  //   } catch (e) {
-  //     print('Error fetching team details: $e');
-  //   }
-  // }
-
-
-  @override
   Widget build(BuildContext context) {
-    // if (isLoading) {
-    //   return Scaffold(
-    //     appBar: AppBar(title: const Text('Team Details')),
-    //     body: const Center(child: CircularProgressIndicator()),
-    //   );
-    // }
-
     final members = widget.team.teamMembers;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.team.name),
+        title: Text(
+          widget.team.name,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.indigo,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Team Name: ${widget.team.name}', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 16),
-            const Text('Members:', style: TextStyle(fontSize: 18)),
+            Text(
+              'Team Name: ${widget.team.name}',
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: Colors.indigo,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Members:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: members.length,
@@ -83,69 +66,130 @@ class _TeamDetailsScreenState extends State<TeamDetailsScreen> {
                         .get(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const ListTile(title: Text('Loading...'));
+                        return const Center(child: CircularProgressIndicator());
                       }
 
                       if (snapshot.hasError) {
-                        return const ListTile(title: Text('Error loading user.'));
+                        return const Center(
+                          child: Text('Error loading user.'),
+                        );
                       }
 
                       final user = snapshot.data!;
-                      return ListTile(
-                        title: Text(user['name'] ?? 'Unknown'),
-                        subtitle: Text(user['email'] ?? 'Unknown Email'),
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.indigo,
+                            child: Text(
+                              user['name']?.substring(0, 1).toUpperCase() ?? '?',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          title: Text(
+                            user['name'] ?? 'Unknown',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          subtitle: Text(user['email'] ?? 'Unknown Email'),
+                        ),
                       );
                     },
                   );
                 },
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.edit),
-                  label: const Text("Edit"),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    backgroundColor: Colors.indigo,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  icon: const Icon(Icons.edit, color: Colors.white),
+                  label: const Text("Edit",style: TextStyle(
+                      fontSize: 11,color: Colors.black
+                  ),),
                   onPressed: () {
-                    Get.to(() => EditTeamScreen(team: widget.team,));
+                    Get.to(() => EditTeamScreen(team: widget.team));
                   },
                 ),
-                if(widget.team.createdBy == FirebaseAuth.instance.currentUser!.uid)
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.delete),
-                  label: const Text("Delete"),
-                  onPressed: () => _showConfirmationDialog(
-                    context,
-                    title: "Delete Team",
-                    content: "Are you sure you want to delete this team?",
-                    onConfirm: () => teamService.deleteTeam(widget.team.teamId),
+                if (widget.team.createdBy ==
+                    FirebaseAuth.instance.currentUser!.uid)
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    icon: const Icon(Icons.delete, color: Colors.white),
+                    label: const Text("Delete",style: TextStyle(
+                        fontSize: 11,color: Colors.black
+                    ),),
+                    onPressed: () => _showConfirmationDialog(
+                      context,
+                      title: "Delete Team",
+                      content: "Are you sure you want to delete this team?",
+                      onConfirm: () => teamService.deleteTeam(widget.team.teamId),
+                    ),
                   ),
-                ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   onPressed: () {
-                    // Show dialog to add a new member
                     showDialog(
                       context: context,
                       builder: (context) {
                         final emailController = TextEditingController();
 
                         return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
                           title: const Text('Add Member'),
                           content: TextField(
                             controller: emailController,
                             decoration: const InputDecoration(
                               labelText: 'Member Email',
+                              border: OutlineInputBorder(),
                             ),
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(color: Colors.red),
+                              ),
                             ),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.indigo,
+                              ),
                               onPressed: () {
-                                teamService.addMember(emailController.text.trim(),widget.team.teamId);
+                                teamService.addMember(
+                                    emailController.text.trim(),
+                                    widget.team.teamId);
                                 Navigator.pop(context);
                               },
                               child: const Text('Add'),
@@ -155,45 +199,12 @@ class _TeamDetailsScreenState extends State<TeamDetailsScreen> {
                       },
                     );
                   },
-                  child: const Text('Add Member'),
+                  child: const Text('Add Member',style: TextStyle(
+                    fontSize: 11,color: Colors.black
+                  ),),
                 ),
               ],
             ),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     // Show dialog to add a new member
-            //     showDialog(
-            //       context: context,
-            //       builder: (context) {
-            //         final emailController = TextEditingController();
-            //
-            //         return AlertDialog(
-            //           title: const Text('Add Member'),
-            //           content: TextField(
-            //             controller: emailController,
-            //             decoration: const InputDecoration(
-            //               labelText: 'Member Email',
-            //             ),
-            //           ),
-            //           actions: [
-            //             TextButton(
-            //               onPressed: () => Navigator.pop(context),
-            //               child: const Text('Cancel'),
-            //             ),
-            //             ElevatedButton(
-            //               onPressed: () {
-            //                 teamService.addMember(emailController.text.trim(),widget.team.teamId);
-            //                 Navigator.pop(context);
-            //               },
-            //               child: const Text('Add'),
-            //             ),
-            //           ],
-            //         );
-            //       },
-            //     );
-            //   },
-            //   child: const Text('Add Member'),
-            // ),
           ],
         ),
       ),
@@ -210,14 +221,21 @@ void _showConfirmationDialog(
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       title: Text(title),
       content: Text(content),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text("Cancel"),
+          child: const Text(
+            "Cancel",
+            style: TextStyle(color: Colors.red),
+          ),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.indigo,
+          ),
           onPressed: () {
             Navigator.pop(context);
             onConfirm();
