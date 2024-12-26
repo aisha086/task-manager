@@ -96,7 +96,13 @@ class FirebaseAuthService {
       final credential = GoogleAuthProvider.credential(
           accessToken: gAuth.accessToken, idToken: gAuth.idToken);
 
-      await _auth.signInWithCredential(credential);
+      final authCredential = await _auth.signInWithCredential(credential);
+
+      String? token = await FirebaseMessaging.instance.getToken();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(authCredential.user!.uid)
+          .update({'fcmToken': token});
       // if(_auth.currentUser != null) {
       //   await _auth.currentUser!.linkWithCredential(credential);
       print(_auth.currentUser!.uid);

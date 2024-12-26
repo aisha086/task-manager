@@ -53,6 +53,7 @@ dependencies:
   flutter_timezone: ^4.0.0
   timezone: ^0.10.0
   permission_handler: ^11.3.1
+  http: ^1.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

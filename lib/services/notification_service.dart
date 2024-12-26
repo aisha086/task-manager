@@ -11,6 +11,8 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import '../models/task.dart';
 import '../screens/teams/notificationScreen.dart';
+import 'fcm_service.dart';
+
 
 class NotificationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -160,6 +162,7 @@ class NotificationService {
       }
 
       String receiverId = userQuery.docs.first.id;
+      String? receiverToken = userQuery.docs.first.data()['fcmToken'];
 
       // Add a notification document in the 'notifications' collection
       await _firestore.collection('notifications').add({
@@ -171,11 +174,21 @@ class NotificationService {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // Trigger local notification
-      await displayNotification(
-        title: 'Team Invitation',
-        body: 'You have been invited to join the team "$teamName".',
-      );
+      // Trigger FCM notification
+      if (receiverToken != null && receiverToken.isNotEmpty) {
+        await FCMService.sendFCMNotification(
+          fcmToken: receiverToken,
+          title: 'Team Invitation',
+          body: 'You have been invited to join the team "$teamName".',
+          data: {
+            'teamId': teamId,
+            'teamName': teamName,
+            'senderId': senderId,
+          },
+        );
+      } else {
+        print('Receiver does not have an FCM token.');
+      }
     } catch (e) {
       print('Error sending join request: $e');
       rethrow;
@@ -198,4 +211,8 @@ class NotificationService {
           body: message.notification?.body ?? "Notif body");
     }
   }
+
+
+
+
 }
