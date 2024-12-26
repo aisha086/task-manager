@@ -21,7 +21,6 @@ class HomeScreenDrawer extends StatelessWidget {
       child: Column(
         children: [
           const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -176,7 +176,7 @@ class NotificationService {
 
       // Trigger FCM notification
       if (receiverToken != null && receiverToken.isNotEmpty) {
-        await FCMService.sendFCMNotification(
+        await sendFCMNotification(
           fcmToken: receiverToken,
           title: 'Team Invitation',
           body: 'You have been invited to join the team "$teamName".',
