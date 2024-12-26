@@ -7,6 +7,7 @@ import 'package:task_manager/screens/settings.dart';
 import 'package:task_manager/screens/tasks/add_task_screen.dart';
 import 'package:task_manager/screens/tasks/view_tasks_screen.dart';
 import 'package:task_manager/screens/chat/chat_screen_main.dart';
+import 'package:task_manager/services/notification_service.dart';
 import 'package:task_manager/widgets/dashboard/drawer.dart';
 
 import '../services/firebase_auth_service.dart';
@@ -16,13 +17,24 @@ import '../widgets/tasks/task_list.dart';
 import '../widgets/tasks/task_progress.dart';
 
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   DashboardPage({super.key}){
     Get.put(TaskService());
     Get.put(TeamService());
   }
 
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
 
+class _DashboardPageState extends State<DashboardPage> {
+
+  @override
+  void initState() {
+    NotificationService().requestIOSPermissions();
+    NotificationService().requestAndroidPermissions();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

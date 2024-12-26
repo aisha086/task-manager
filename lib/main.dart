@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:task_manager/databases/task_service.dart';
-import 'package:task_manager/databases/team_service.dart';
 import 'package:task_manager/screens/authentication/login_screen.dart';
-import 'package:task_manager/screens/chat/chat_screen_main.dart';
 import 'package:task_manager/screens/home_screen.dart';
 import 'package:task_manager/screens/launching/splash_screen.dart';
 import 'package:task_manager/screens/themeprovider.dart';
+import 'package:task_manager/services/notification_service.dart';
 import 'package:task_manager/services/themes_service.dart';
 
 import 'firebase_options.dart';
@@ -28,18 +26,14 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Initialize Firebase Messaging
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // Initialize Local Notifications
-  const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
-  const InitializationSettings initializationSettings =
-  InitializationSettings(android: initializationSettingsAndroid);
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
+  await NotificationService().init();
   // Handle foreground messages
-  FirebaseMessaging.onMessage.listen(_firebaseMessagingForegroundHandler);
+  FirebaseMessaging.onMessage.listen(NotificationService().firebaseMessagingForegroundHandler);
+
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    Get.to(() => NotificationService());
+  });
 
   runApp(
     MultiProvider(
@@ -51,32 +45,6 @@ Future<void> main() async {
   );
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
-}
-
-Future<void> _firebaseMessagingForegroundHandler(RemoteMessage message) async {
-  print("Received a message: ${message.notification?.title}");
-
-  if (message.notification != null) {
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails(
-      'high_importance_channel', // Channel ID
-      'High Importance Notifications', // Channel name
-      importance: Importance.high,
-      priority: Priority.high,
-    );
-    const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidNotificationDetails);
-
-    await flutterLocalNotificationsPlugin.show(
-      message.notification.hashCode,
-      message.notification?.title,
-      message.notification?.body,
-      notificationDetails,
-    );
-  }
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

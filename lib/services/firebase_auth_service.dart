@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/toast.dart';
+import '../databases/user_service.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -16,9 +18,10 @@ class FirebaseAuthService {
       );
 
       _auth.currentUser!.updateDisplayName(name);
+      String? token = await FirebaseMessaging.instance.getToken();
 
       // After user is created, store user details in Firestore
-      await _storeUserDetails(userCredential.user!, name, email);
+      await UserService().storeUserDetails(userCredential.user!, name, email,token??'');
 
       // Sign out user after registration (if you don't want to auto-login)
       await _auth.signOut();
@@ -36,26 +39,6 @@ class FirebaseAuthService {
     return null; // Return null if there's an error
   }
 
-  // Store user details in Firestore
-  Future<void> _storeUserDetails(User user, String name, String email) async {
-    try {
-      // Reference to the Firestore 'users' collection
-      final userRef = _firestore.collection('users').doc(user.uid);
-
-      // Add user details to Firestore
-      await userRef.set({
-
-        'name': name,
-        'email': email,
-        'teams': [],
-        'tasks':[]
-      });
-
-      showToast("User details stored successfully.");
-    } catch (e) {
-      showToast("Error saving user details: $e");
-    }
-  }
 
   // Sign In with email and password
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
@@ -65,6 +48,12 @@ class FirebaseAuthService {
         password: password,
       );
       print(credential.user);
+      String? token = await FirebaseMessaging.instance.getToken();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(credential.user!.uid)
+          .update({'fcmToken': token});
+
 
       return credential.user;
     } on FirebaseAuthException catch (e) {

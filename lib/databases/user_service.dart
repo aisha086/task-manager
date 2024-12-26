@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_manager/models/user.dart';
 
+import '../widgets/toast.dart';
+
 class UserService {
   final CollectionReference userCollection =
   FirebaseFirestore.instance.collection('users');
@@ -9,6 +11,27 @@ class UserService {
   // Add new user
   Future<void> addUser(UserModel user) async {
     await userCollection.doc(user.userId).set(user.toMap());
+  }
+
+  Future<void> storeUserDetails(User user, String name, String email,String token) async {
+    try {
+      // Reference to the Firestore 'users' collection
+      final userRef = userCollection.doc(user.uid);
+
+      // Add user details to Firestore
+      await userRef.set({
+
+        'name': name,
+        'email': email,
+        'teams': [],
+        'tasks':[],
+        'fcmToken': token
+      });
+
+      showToast("User details stored successfully.");
+    } catch (e) {
+      showToast("Error saving user details: $e");
+    }
   }
 
   // Get user by ID

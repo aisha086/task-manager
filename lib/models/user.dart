@@ -3,6 +3,7 @@ class UserModel {
   String userId;
   String name;
   String email;
+  String fcmToken;
   List<String> tasks;
   List<String> teams;
 
@@ -12,6 +13,7 @@ class UserModel {
     required this.email,
     required this.tasks,
     required this.teams,
+    required this.fcmToken
   });
 
   // Convert UserModel to a Map to store in Firestore
@@ -22,7 +24,7 @@ class UserModel {
       'email': email,
       'tasks': tasks,
       'teams': teams,
-
+      'fcmToken': fcmToken
     };
 
   }
@@ -34,6 +36,7 @@ class UserModel {
       email: map['email'],
       tasks: List<String>.from(map['tasks']),
       teams: List<String>.from(map['teams']),
+      fcmToken: map['fcmToken']
     );
   }
 
