@@ -8,7 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:task_manager/screens/authentication/login_screen.dart';
 import 'package:task_manager/screens/home_screen.dart';
 import 'package:task_manager/screens/launching/splash_screen.dart';
-import 'package:task_manager/screens/themeprovider.dart';
+import 'package:task_manager/utils/notification_enabler.dart';
+import 'package:task_manager/utils/themeprovider.dart';
 import 'package:task_manager/services/notification_service.dart';
 import 'package:task_manager/services/themes_service.dart';
 
@@ -28,7 +29,9 @@ Future<void> main() async {
 
   await NotificationService().init();
   // Handle foreground messages
-  FirebaseMessaging.onMessage.listen(NotificationService().firebaseMessagingForegroundHandler);
+  FirebaseMessaging.onMessage.listen(
+      NotificationService().firebaseMessagingForegroundHandler
+  );
 
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -39,6 +42,8 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => PushNotificationHandler()),
+
       ],
       child: const MyApp(),
     ),

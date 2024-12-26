@@ -28,6 +28,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       TextEditingController();
 
   final TextEditingController _dueDateController = TextEditingController();
+  final TextEditingController _dueTimeController = TextEditingController();
 
   final TextEditingController _labelController = TextEditingController();
 
@@ -96,6 +97,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 controller: _dueDateController,
                 readOnly: true,
                 onTap: _selectDate,
+              ),
+              const SizedBox(height: 16),
+
+              CustomTextField(
+                label: "Task Time",
+                controller: _dueTimeController,
+                readOnly: true,
+                onTap: _selectTime,
               ),
               const SizedBox(height: 16),
 
@@ -233,6 +242,30 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       });
     }
   }
+
+  _selectTime() async {
+    TimeOfDay? selectedTime = await showTimePicker(
+      context: Get.context!,
+      initialTime: TimeOfDay.fromDateTime(_dueDate ?? DateTime.now()),
+    );
+
+    if (selectedTime != null) {
+      setState(() {
+        // Combine the existing date with the selected time
+        _dueDate = DateTime(
+          _dueDate?.year ?? DateTime.now().year,
+          _dueDate?.month ?? DateTime.now().month,
+          _dueDate?.day ?? DateTime.now().day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+
+        // Update the controller with formatted DateTime
+        _dueTimeController.text = DateFormat('hh:mm a').format(_dueDate!);
+      });
+    }
+  }
+
 
   // Function to add a task
   _addTask() async {

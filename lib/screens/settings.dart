@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:task_manager/screens/themeprovider.dart';
+import 'package:task_manager/utils/notification_enabler.dart';
+import 'package:task_manager/utils/themeprovider.dart';
 
 import '../services/firebase_auth_service.dart';
 
@@ -10,6 +12,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final notifHandler = Provider.of<PushNotificationHandler>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -18,25 +21,25 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text(
-            'Account',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ListTile(
-            leading: const Icon(Icons.person, color: Colors.blue),
-            title: const Text('Profile'),
-            subtitle: const Text('Edit your profile details'),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              // Navigate to Profile Settings
-            },
-          ),
-          const Divider(),
+          // const Text(
+          //   'Account',
+          //   style: TextStyle(
+          //     fontSize: 18,
+          //     fontWeight: FontWeight.bold,
+          //     color: Colors.grey,
+          //   ),
+          // ),
+          // const SizedBox(height: 8),
+          // ListTile(
+          //   leading: const Icon(Icons.person, color: Colors.blue),
+          //   title: const Text('Profile'),
+          //   subtitle: const Text('Edit your profile details'),
+          //   trailing: const Icon(Icons.arrow_forward_ios),
+          //   onTap: () {
+          //     // Navigate to Profile Settings
+          //   },
+          // ),
+          // const Divider(),
           const Text(
             'Notifications',
             style: TextStyle(
@@ -47,12 +50,11 @@ class SettingsPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           SwitchListTile(
-            activeColor: Colors.green,
             title: const Text('Push Notifications'),
             subtitle: const Text('Get notified on your device'),
-            value: false,
+            value: notifHandler.isNotificationEnabled,
             onChanged: (value) {
-              // Toggle Push Notifications
+              notifHandler.toggleNotification();
             },
           ),
           const Divider(),
@@ -82,7 +84,10 @@ class SettingsPage extends StatelessWidget {
             ),
             icon: const Icon(Icons.logout),
             label: const Text('Log Out'),
-            onPressed: () => FirebaseAuthService().signOut(),
+            onPressed: (){
+              FirebaseAuthService().signOut();
+              Get.back();
+            },
 
           ),
         ],

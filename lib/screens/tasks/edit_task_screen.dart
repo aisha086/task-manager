@@ -28,6 +28,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   final TextEditingController _taskDescriptionController = TextEditingController();
 
   final TextEditingController _dueDateController = TextEditingController();
+  final TextEditingController _dueTimeController = TextEditingController();
 
   final TextEditingController _labelController = TextEditingController();
 
@@ -50,6 +51,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     _taskNameController.text = widget.task.name;
     _taskDescriptionController.text = widget.task.description;
     _dueDateController.text = DateFormat('yyyy-MM-dd').format(widget.task.dueDate);
+    _dueTimeController.text = DateFormat('hh:mm a').format(widget.task.dueDate);
     _priority = widget.task.priority;
     _labels = widget.task.labels!=null? widget.task.labels!.cast<String>() :[];
     _dueDate = widget.task.dueDate;
@@ -106,6 +108,15 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                 onTap: _selectDate,
               ),
               const SizedBox(height: 16),
+
+              CustomTextField(
+                label: "Task Time",
+                controller: _dueTimeController,
+                readOnly: true,
+                onTap: _selectTime,
+              ),
+              const SizedBox(height: 16),
+
               DropdownButtonFormField<Team>(
                 value: _selectedTeam,
                 onChanged: (value) {
@@ -239,6 +250,29 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     }
   }
 
+  _selectTime() async {
+    TimeOfDay? selectedTime = await showTimePicker(
+      context: Get.context!,
+      initialTime: TimeOfDay.fromDateTime(_dueDate ?? DateTime.now()),
+    );
+
+    if (selectedTime != null) {
+      setState(() {
+        // Combine the existing date with the selected time
+        _dueDate = DateTime(
+          _dueDate?.year ?? DateTime.now().year,
+          _dueDate?.month ?? DateTime.now().month,
+          _dueDate?.day ?? DateTime.now().day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+
+        // Update the controller with formatted DateTime
+        _dueTimeController.text = DateFormat('hh:mm a').format(_dueDate!);
+      });
+    }
+  }
+
   // Function to add a task
   _editTask() async {
     if (_taskNameController.text.isEmpty ||
@@ -325,7 +359,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   }
 
   getTeam(){
-    _selectedTeam = teamService.teams.where((t) => t.teamId == widget.task.teamId).first;
+    for (var team in teamService.teams) {
+      if (team.teamId == widget.task.teamId) {
+        _selectedTeam = team;
+        break;
+      }
+    }
   }
 
 }

@@ -66,6 +66,12 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                 icon: Icons.calendar_today,
                 color: Colors.blue,
               ),
+              buildInfoCard(
+                title: "Time",
+                content: "${widget.task.dueDate.hour}:${widget.task.dueDate.minute}",
+                icon: Icons.watch_later,
+                color: Colors.greenAccent,
+              ),
               if (widget.task.labels != null && widget.task.labels!.isNotEmpty)
                 buildInfoCard(
                   title: "Labels",

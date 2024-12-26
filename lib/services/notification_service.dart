@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:task_manager/utils/notification_enabler.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import 'package:timezone/data/latest.dart' as tz;
@@ -12,7 +13,6 @@ import 'package:timezone/data/latest.dart' as tz;
 import '../models/task.dart';
 import '../screens/teams/notificationScreen.dart';
 import 'fcm_service.dart';
-
 
 class NotificationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -79,13 +79,16 @@ class NotificationService {
     var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: drawinPlatformChannelSpecifics);
-    return await flutterLocalNotificationsPlugin.show(
-      0,
-      title,
-      body,
-      platformChannelSpecifics,
-      payload: title,
-    );
+
+    if (PushNotificationHandler().isNotificationEnabled) {
+      return await flutterLocalNotificationsPlugin.show(
+        0,
+        title,
+        body,
+        platformChannelSpecifics,
+        payload: title,
+      );
+    }
   }
 
   scheduleNotification(Task task, DateTime dateTime) async {
@@ -93,16 +96,18 @@ class NotificationService {
     final tz.TZDateTime scheduledTime = tz.TZDateTime.from(dateTime, tz.local);
     print(scheduledTime);
 
-    flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        "Time for ${task..name}",
-        task.description,
-        scheduledTime,
-        NotificationDetails(android: _androidNotificationDetails),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dateAndTime);
+    if (PushNotificationHandler().isNotificationEnabled) {
+      flutterLocalNotificationsPlugin.zonedSchedule(
+          0,
+          "Time for ${task..name}",
+          task.description,
+          scheduledTime,
+          NotificationDetails(android: _androidNotificationDetails),
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.dateAndTime);
+    }
   }
 
   Future<void> cancelNotification(int id) async {
@@ -203,16 +208,11 @@ class NotificationService {
     });
   }
 
-  Future<void> firebaseMessagingForegroundHandler(
-      RemoteMessage message) async {
-    if (message.notification != null) {
+  Future<void> firebaseMessagingForegroundHandler(RemoteMessage message) async {
+    if (message.notification != null && PushNotificationHandler().isNotificationEnabled) {
       displayNotification(
           title: message.notification?.title ?? "Notification",
           body: message.notification?.body ?? "Notif body");
     }
   }
-
-
-
-
 }
