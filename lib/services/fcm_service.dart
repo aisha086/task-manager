@@ -18,14 +18,15 @@ Future<bool> sendFCMNotification({
     ['https://www.googleapis.com/auth/cloud-platform'],
   );
 
+
   final notificationData = {
     'message': {
       'token': fcmToken,
-      'notification': data
+      'notification':  {'title': title, 'body': body}
     },
   };
 
-  const String senderId = '736705283357';
+  const String senderId = '879238794434';
   final response = await client.post(
     Uri.parse('https://fcm.googleapis.com/v1/projects/$senderId/messages:send'),
     headers: {

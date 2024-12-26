@@ -141,7 +141,7 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
       DocumentReference teamRef =
       await FirebaseFirestore.instance.collection('teams').add({
         'name': _teamNameController.text.trim(),
-        'members': [], // No members until they accept the request
+        'members': [currentUserId], // No members until they accept the request
         'createdBy': currentUserId,
         'creationDate': FieldValue.serverTimestamp(),
       });
