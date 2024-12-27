@@ -293,7 +293,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         assignedTeamMembers: null, //TODO ADD FUNCTIONALITY FOR TEAM MEMBERS
         taskId: '',
         isCompleted: false,
-        teamId: null);
+        teamId: null,
+      taskIntId: 0
+    );
 
     await taskService.updateTask(widget.task.taskId,newTask);
     Get.back(); // Go back to the previous screen

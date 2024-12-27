@@ -4,6 +4,7 @@ import 'package:task_manager/databases/task_service.dart';
 
 import '../../models/task.dart';
 import '../../screens/tasks/task_detail_screens.dart';
+import '../../services/notification_service.dart';
 
 class TaskTile extends StatelessWidget {
   final Task task;
@@ -14,8 +15,12 @@ class TaskTile extends StatelessWidget {
   });
 
   final TaskService taskService = Get.find();
+  final NotificationService notifyHelper = NotificationService();
+
+
   @override
   Widget build(BuildContext context) {
+    callScheduledNotification(task);
     return GestureDetector(
       onTap: () => Get.to(() => TaskDetailScreen(task: task)),
       child: Container(
@@ -125,5 +130,19 @@ class TaskTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  callScheduledNotification(Task task) {
+    DateTime date = task.dueDate;
+    DateTime notifTime = DateTime(date.year,date.month,date.day,date.hour,date.minute,0,0,0);
+    //subtracting how many minutes early should the user be notified
+    if (notifTime.isBefore(DateTime.now())) {
+      print(notifTime);
+      print(DateTime.now());
+      print("not scheduled");
+      return;
+    } else {
+      notifyHelper.scheduleNotification(task, notifTime);
+    }
   }
 }

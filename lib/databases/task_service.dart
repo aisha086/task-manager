@@ -26,14 +26,13 @@ class TaskService extends GetxController {
     try {
       DocumentReference docRef = await taskCollection.add(task.toMap());
       await fetchTasks();
-      showToast("Success Task added!");
+      showToast("Successfully Task added!");
       return docRef.id;
     } on Exception catch (e) {
       showToast("Error Occurred $e");
       print(e);
       return "Error Occurred";
     }
-// Return the generated task ID
   }
 
   // Fetch tasks for the current user (top 5, sorted by due date)

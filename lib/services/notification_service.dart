@@ -98,8 +98,8 @@ class NotificationService {
 
     if (PushNotificationHandler().isNotificationEnabled) {
       flutterLocalNotificationsPlugin.zonedSchedule(
-          0,
-          "Time for ${task..name}",
+          task.taskIntId,
+          "Time for ${task.name}",
           task.description,
           scheduledTime,
           NotificationDetails(android: _androidNotificationDetails),

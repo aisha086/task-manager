@@ -14,7 +14,7 @@ class TaskListWidget extends StatelessWidget {
   });
 
   final TaskService taskService = Get.find();
-  final NotificationService notifyHelper = NotificationService();
+  // final NotificationService notifyHelper = NotificationService();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class TaskListWidget extends StatelessWidget {
                   itemCount: taskService.tasks.length < 5 ? taskService.tasks.length : 5,
                   itemBuilder: (context, index) {
                     final task = taskService.tasks[index];
-                    callScheduledNotification(task);
+                    // callScheduledNotification(task);
                     return TaskTile(task: task);
                   },
                 ),
@@ -50,17 +50,17 @@ class TaskListWidget extends StatelessWidget {
     );
   }
 
-  callScheduledNotification(Task task) {
-    DateTime date = task.dueDate;
-    DateTime notifTime = DateTime(date.year,date.month,date.day,date.hour,date.minute,0,0,0);
-    //subtracting how many minutes early should the user be notified
-    if (notifTime.isBefore(DateTime.now())) {
-      print(notifTime);
-      print(DateTime.now());
-      print("not scheduled");
-      return;
-    } else {
-      notifyHelper.scheduleNotification(task, notifTime);
-    }
-  }
+  // callScheduledNotification(Task task) {
+  //   DateTime date = task.dueDate;
+  //   DateTime notifTime = DateTime(date.year,date.month,date.day,date.hour,date.minute,0,0,0);
+  //   //subtracting how many minutes early should the user be notified
+  //   if (notifTime.isBefore(DateTime.now())) {
+  //     print(notifTime);
+  //     print(DateTime.now());
+  //     print("not scheduled");
+  //     return;
+  //   } else {
+  //     notifyHelper.scheduleNotification(task, notifTime);
+  //   }
+  // }
 }

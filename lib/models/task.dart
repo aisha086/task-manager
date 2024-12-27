@@ -10,6 +10,7 @@ class Task {
   List? assignedTeamMembers;
   String? teamId;
   String taskId;
+  int taskIntId;
   bool isCompleted;
 
   Task({
@@ -21,7 +22,8 @@ class Task {
     this.assignedTeamMembers,
     this.teamId,
     required this.taskId,
-    required this.isCompleted
+    required this.isCompleted,
+    required this.taskIntId
   });
 
   Map<String, dynamic> toMap() {
@@ -34,7 +36,8 @@ class Task {
       'assignedTeamMembers': assignedTeamMembers,
       'teamId': teamId,
       'userId': FirebaseAuth.instance.currentUser!.uid,
-      'isCompleted': isCompleted
+      'isCompleted': isCompleted,
+      'taskIntId': DateTime.now().millisecondsSinceEpoch ~/ 1000
     };
   }
 
@@ -51,7 +54,8 @@ class Task {
       assignedTeamMembers: map['assignedTeamMembers'] as List?,
       taskId: docId,
       teamId: map['teamId'] as String?,
-      isCompleted: map['isCompleted'] as bool
+      isCompleted: map['isCompleted'] as bool,
+      taskIntId: map['taskIntId'] as int
     );
   }
 }

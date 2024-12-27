@@ -291,7 +291,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         assignedTeamMembers: memberIds,
         taskId: '',
         isCompleted: false,
-        teamId: _selectedTeam?.teamId
+        teamId: _selectedTeam?.teamId,
+      taskIntId: 0
     );
 
     await taskService.addTask(newTask);
